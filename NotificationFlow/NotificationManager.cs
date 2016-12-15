@@ -57,27 +57,48 @@ namespace NotificationFlow
             _receivers.Remove(receiver);
             _deliveryTypes.Clear();
         }
-        
+
         /// <summary>
         /// Sends a notification via this notification manager. The notification is delivered
-        /// to all registered components that subscribed to its type.
+        /// to all registered components that subscribed to its type, not interrupting the
+        /// delivery of the currently pending notification.
         /// </summary>
         /// <param name="sender">The sender of the notification.</param>
         /// <param name="notification">The notification to deliver.</param>
         public void SendNotification(object sender, object notification)
         {
+            SendNotification(sender, notification, DeliveryMode.Ordered);
+        }
+
+        /// <summary>
+        /// Sends a notification via this notification manager. The notification is delivered
+        /// to all registered components that subscribed to its type, using the specified
+        /// delivery mode.
+        /// </summary>
+        /// <param name="sender">The sender of the notification.</param>
+        /// <param name="notification">The notification to deliver.</param>
+        /// <param name="mode">Specifies how the notification is delivered.</param>
+        public void SendNotification(object sender, object notification, DeliveryMode mode)
+        {
             if (notification == null)
                 throw new ArgumentNullException("notification");
 
-            NotificationData notificationData = new NotificationData(sender, notification);
-            if (_currentNode == null)
+            if (mode == DeliveryMode.Immediate)
             {
-                _pendingNotifications.AddFirst(notificationData);
-                ProcessPendingNotifications();
+                DeliverNotification(sender, notification);
             }
-            else
+            else if (mode == DeliveryMode.Ordered)
             {
-                _currentNode = _pendingNotifications.AddAfter(_currentNode, notificationData);
+                NotificationData notificationData = new NotificationData(sender, notification);
+                if (_currentNode == null)
+                {
+                    _pendingNotifications.AddFirst(notificationData);
+                    ProcessPendingNotifications();
+                }
+                else
+                {
+                    _currentNode = _pendingNotifications.AddAfter(_currentNode, notificationData);
+                }
             }
         }
 

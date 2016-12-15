@@ -16,5 +16,13 @@ namespace NotificationFlow
         /// <param name="sender">The sender of the notification.</param>
         /// <param name="notification">The notification to deliver.</param>
         void SendNotification(object sender, object notification);
+
+        /// <summary>
+        /// Sends a notification in this notification context.
+        /// </summary>
+        /// <param name="sender">The sender of the notification.</param>
+        /// <param name="notification">The notification to deliver.</param>
+        /// <param name="mode">Specifies how the notification is delivered.</param>
+        void SendNotification(object sender, object notification, DeliveryMode mode);
     }
 }

@@ -40,6 +40,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DeliveryMode.cs" />
     <Compile Include="INotificationContext.cs" />
     <Compile Include="INotificationListener.cs" />
     <Compile Include="Internal\DeliveryType.cs" />
